@@ -22,79 +22,77 @@
   var isMobile = window.screen.width < 800 || /Mobi|Android|iPhone|iPod/i.test(navigator.userAgent);
   if (!isMobile) return;
 
-  // Replace viewport with device-width so CSS measurements work + browser doesn't auto-fit
-  var oldVp = document.querySelector('meta[name="viewport"]');
-  if (oldVp) oldVp.remove();
-  var vp = document.createElement('meta');
-  vp.name = 'viewport';
-  vp.content = 'width=device-width, initial-scale=1, user-scalable=yes, maximum-scale=5';
-  document.head.appendChild(vp);
+  var SLIDE_TOTAL = 19;
 
-  // Inject mobile CSS
-  var style = document.createElement('style');
-  style.id = '__mobile_overrides';
-  style.textContent = [
-    'html, body { margin:0; padding:0; overflow:hidden; width:100vw; height:100vh; background:#060608; }',
-    'deck-stage {',
-    '  position: fixed !important; top:0 !important; left:0 !important;',
-    '  width: 1920px !important; height: 1080px !important;',
-    '  transform: scale(calc(100vw / 1920));',
-    '  transform-origin: top left;',
-    '  display: block !important;',
-    '}',
-    '.__m_nav {',
-    '  position: fixed; bottom: 18px; left: 0; right: 0;',
-    '  display: flex; justify-content: center; gap: 10px; z-index: 99999;',
-    '  pointer-events: none;',
-    '}',
-    '.__m_nav > * { pointer-events: auto; }',
-    '.__m_nav button {',
-    '  background: rgba(247,148,30,0.95); color: #0a0a0c;',
-    '  border: none; padding: 14px 20px; border-radius: 999px;',
-    '  font: 700 13px "JetBrains Mono", "SF Mono", monospace;',
-    '  letter-spacing: 0.14em; text-transform: uppercase;',
-    '  box-shadow: 0 4px 18px rgba(0,0,0,0.5);',
-    '  cursor: pointer;',
-    '}',
-    '.__m_nav button:disabled { opacity: 0.35; }',
-    '.__m_nav .pages {',
-    '  background: rgba(20,20,26,0.95); color: #f5f0eb;',
-    '  border: 1px solid #2a2a32;',
-    '  padding: 14px 18px; border-radius: 999px;',
-    '  font: 600 12px "JetBrains Mono", "SF Mono", monospace;',
-    '  letter-spacing: 0.14em; min-width: 72px; text-align: center;',
-    '}'
-  ].join('\n');
-  document.head.appendChild(style);
-
-  function init() {
-    if (document.querySelector('.__m_nav')) return;
-    var slides = document.querySelectorAll('section.slide');
-    var total = slides.length || 19;
-    function cur() { return Math.max(1, Math.min(total, parseInt((location.hash || '#1').replace('#','')) || 1)); }
-    function go(n) {
-      n = Math.max(1, Math.min(total, n));
-      location.hash = '#' + n;
-      var pg = document.getElementById('__m_page');
-      if (pg) pg.textContent = n + ' / ' + total;
+  function applyMobile() {
+    // 1. Viewport (the bundler may overwrite — we keep re-applying)
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (!vp || vp.getAttribute('data-mobile-fixed') !== '1') {
+      if (vp) vp.remove();
+      vp = document.createElement('meta');
+      vp.name = 'viewport';
+      vp.content = 'width=device-width, initial-scale=1, user-scalable=yes, maximum-scale=5';
+      vp.setAttribute('data-mobile-fixed', '1');
+      document.head.appendChild(vp);
     }
-    var nav = document.createElement('div');
-    nav.className = '__m_nav';
-    nav.innerHTML =
-      '<button id="__m_prev">◂ PREV</button>' +
-      '<span class="pages" id="__m_page">' + cur() + ' / ' + total + '</span>' +
-      '<button id="__m_next">NEXT ▸</button>';
-    document.body.appendChild(nav);
-    document.getElementById('__m_prev').addEventListener('click', function(){ go(cur() - 1); });
-    document.getElementById('__m_next').addEventListener('click', function(){ go(cur() + 1); });
-    window.addEventListener('hashchange', function(){
+
+    // 2. Style block
+    if (!document.getElementById('__mobile_overrides')) {
+      var style = document.createElement('style');
+      style.id = '__mobile_overrides';
+      style.textContent = [
+        'html, body { margin:0 !important; padding:0 !important; overflow:hidden !important; width:100vw !important; height:100vh !important; background:#060608 !important; display:block !important; align-items:initial !important; }',
+        'deck-stage { position: fixed !important; top:0 !important; left:0 !important; width: 1920px !important; height: 1080px !important; transform: scale(calc(100vw / 1920)) !important; transform-origin: top left !important; display: block !important; }',
+        '.__m_nav { position: fixed !important; bottom: 18px !important; left: 0 !important; right: 0 !important; display: flex !important; justify-content: center !important; gap: 10px !important; z-index: 2147483647 !important; pointer-events: none !important; }',
+        '.__m_nav > * { pointer-events: auto !important; }',
+        '.__m_nav button { background: rgba(247,148,30,0.96) !important; color: #0a0a0c !important; border: none !important; padding: 14px 20px !important; border-radius: 999px !important; font: 700 13px "JetBrains Mono", "SF Mono", monospace !important; letter-spacing: 0.14em !important; text-transform: uppercase !important; box-shadow: 0 4px 18px rgba(0,0,0,0.5) !important; cursor: pointer !important; }',
+        '.__m_nav .pages { background: rgba(20,20,26,0.95) !important; color: #f5f0eb !important; border: 1px solid #2a2a32 !important; padding: 14px 18px !important; border-radius: 999px !important; font: 600 12px "JetBrains Mono", "SF Mono", monospace !important; letter-spacing: 0.14em !important; min-width: 72px !important; text-align: center !important; }'
+      ].join('\n');
+      document.head.appendChild(style);
+    }
+
+    // 3. Nav UI
+    if (!document.querySelector('.__m_nav')) {
+      var nav = document.createElement('div');
+      nav.className = '__m_nav';
+      function curN() { return Math.max(1, Math.min(SLIDE_TOTAL, parseInt((location.hash || '#1').replace('#','')) || 1)); }
+      nav.innerHTML =
+        '<button id="__m_prev">◂ PREV</button>' +
+        '<span class="pages" id="__m_page">' + curN() + ' / ' + SLIDE_TOTAL + '</span>' +
+        '<button id="__m_next">NEXT ▸</button>';
+      document.body.appendChild(nav);
+      function go(n) {
+        n = Math.max(1, Math.min(SLIDE_TOTAL, n));
+        location.hash = '#' + n;
+        var pg = document.getElementById('__m_page');
+        if (pg) pg.textContent = n + ' / ' + SLIDE_TOTAL;
+      }
+      document.getElementById('__m_prev').addEventListener('click', function(){ go(curN() - 1); });
+      document.getElementById('__m_next').addEventListener('click', function(){ go(curN() + 1); });
+      window.addEventListener('hashchange', function(){
+        var pg = document.getElementById('__m_page');
+        if (pg) pg.textContent = curN() + ' / ' + SLIDE_TOTAL;
+      });
+    }
+
+    // Refresh actual slide count from rendered DOM when possible
+    var slides = document.querySelectorAll('section.slide');
+    if (slides.length > 0 && slides.length !== SLIDE_TOTAL) {
+      SLIDE_TOTAL = slides.length;
       var pg = document.getElementById('__m_page');
-      if (pg) pg.textContent = cur() + ' / ' + total;
-    });
+      if (pg) pg.textContent = (parseInt((location.hash||'#1').replace('#','')) || 1) + ' / ' + SLIDE_TOTAL;
+    }
   }
 
-  if (document.readyState === 'complete') setTimeout(init, 1200);
-  else window.addEventListener('load', function(){ setTimeout(init, 1200); });
+  // Run immediately + after every likely bundler-finished moment
+  applyMobile();
+  [100, 300, 800, 1500, 3000, 6000].forEach(function(ms){ setTimeout(applyMobile, ms); });
+
+  // MutationObserver to re-apply if bundler wipes our injections
+  var observer = new MutationObserver(function() { applyMobile(); });
+  if (document.documentElement) {
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+  }
 })();
   </script>
 </head>
