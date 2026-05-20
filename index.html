@@ -93,6 +93,19 @@
   .ribbon{margin-top:22px;padding:18px 22px;background:linear-gradient(135deg,rgba(247,148,30,0.08),rgba(52,211,153,0.06));border:1px solid var(--green-deep);border-radius:14px}
   .ribbon .label{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:8px}
   .ribbon .punch{font-family:var(--display);font-size:clamp(22px,5vw,30px);line-height:1.2;color:var(--text)}
+
+  /* Facility render gallery */
+  .render-gallery{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.render-gallery{grid-template-columns:1fr}}
+  .render-tile{position:relative;border-radius:16px;overflow:hidden;background:#0a0a0c;border:1px solid var(--border);aspect-ratio:3/2}
+  .render-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+  .render-tile:hover img{transform:scale(1.02)}
+  .render-tile .caption{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.85) 70%);color:var(--text)}
+  .render-tile .caption .num{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.18em;color:var(--orange);display:block;margin-bottom:4px}
+  .render-tile .caption .name{font-family:var(--display);font-size:clamp(16px,2.6vw,22px);line-height:1.15}
+  .render-tile.feature{grid-column:1 / -1;aspect-ratio:21/9}
+  @media(max-width:760px){.render-tile.feature{aspect-ratio:3/2}}
+  .render-disclaimer{margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;text-align:center}
 </style>
 </head>
 <body>
@@ -195,6 +208,39 @@
     <div class="card accent-g"><div class="label green">IN THE CLOUD · SOFTWARE REVENUE</div><h3>The Operating Layer.</h3><ul><li><strong>VAI+ Family</strong> — Multi-athlete subs</li><li><strong>VAI Mentor</strong> — Athlete development plans</li><li><strong>Game OS · Clubs</strong> — SaaS for external orgs</li><li><strong>Sponsor Marketplace</strong> — Verified family targeting</li><li><strong>Media & Highlights</strong> — Tournament packages</li><li><strong>Wallet & Rewards</strong> — Marketplace fees</li></ul></div>
   </div>
   <p style="text-align:center;margin-top:22px;font-family:var(--display);font-size:clamp(20px,5vw,26px);color:var(--text);line-height:1.3">Every dollar of facility revenue creates a software user. <span class="g">Every software user makes the facility more valuable.</span></p>
+</section>
+
+<section id="facility" style="padding-top:48px">
+  <div class="eyebrow orange"><span class="dot"></span>THE BUILDING · CONCEPT RENDERINGS · TOPGOLF MEETS YOUTH PERFORMANCE</div>
+  <h2>Walk the floor. <span class="g">This is what we're building.</span></h2>
+  <p>Performance training stations, live AVANTI dashboards, multi-court gym, motion-capture turf, weight room, and an athlete hub — under one roof. Every drill scores. Every athlete tracked. Every family logged in.</p>
+  <div class="render-gallery">
+    <div class="render-tile feature">
+      <img src="renders/render-6.png" alt="VAI multi-court basketball gym with live scoreboards and shot charts" loading="lazy">
+      <div class="caption"><span class="num">CONCEPT · 01 · COMPETITION FLOOR</span><span class="name">Multi-court gym · Live scoring · Verified leaderboards</span></div>
+    </div>
+    <div class="render-tile">
+      <img src="renders/render-1.png" alt="VAI 40-yard dash track with AVANTI acceleration analysis dashboard" loading="lazy">
+      <div class="caption"><span class="num">CONCEPT · 02 · SPEED LANE</span><span class="name">40-yd · Acceleration · AVANTI live</span></div>
+    </div>
+    <div class="render-tile">
+      <img src="renders/render-2.png" alt="VAI vertical jump testing pad with athlete lab signage and force metrics" loading="lazy">
+      <div class="caption"><span class="num">CONCEPT · 03 · VERTICAL LAB</span><span class="name">Jump · Power · Force-velocity</span></div>
+    </div>
+    <div class="render-tile">
+      <img src="renders/render-5.png" alt="VAI indoor turf field with motion capture, route trees, and heatmaps" loading="lazy">
+      <div class="caption"><span class="num">CONCEPT · 04 · MOTION TURF</span><span class="name">Mo-cap · Heatmaps · Route trees</span></div>
+    </div>
+    <div class="render-tile">
+      <img src="renders/render-4.png" alt="VAI weight room with bench press tracking and Raise The Level overhead screens" loading="lazy">
+      <div class="caption"><span class="num">CONCEPT · 05 · POWER ROOM</span><span class="name">Strength · Velocity · Tracked sets</span></div>
+    </div>
+    <div class="render-tile">
+      <img src="renders/render-3.png" alt="VAI athlete performance hub with fuel station, leaderboard, and events board" loading="lazy">
+      <div class="caption"><span class="num">CONCEPT · 06 · THE HUB</span><span class="name">Fuel · Recover · Compete</span></div>
+    </div>
+  </div>
+  <p class="render-disclaimer">Conceptual renderings. Final architecture subject to design + ZDI site fit.</p>
 </section>
 
 <section data-slide="8" id="s8">
